@@ -10,20 +10,20 @@ const uuid = require("uuid");
 require("dotenv").config();
 
 const signupUser = async (body) => {
-  const { email, password, subscription } = body;
+  
+  const verificationToken = uuid.v4();
+  const { email, password, name } = body;
 
   const isSingup = await Users.create({
+    name,
     email,
     password: await bcryptjs.hash(
       password,
       Number(process.env.BCRYPT_SALT_ROUNDS)
     ),
-    subscription,
-    avatarURL: gravatar.url(email, { s: "100", r: "x", d: "retro" }, false),
-    verificationToken: uuid.v4(),
+    verificationToken,
   });
 
-  const verificationToken = uuid.v4();
 
   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
   const msg = {
@@ -45,22 +45,29 @@ const signupUser = async (body) => {
 };
 
 const loginUser = async (body) => {
+  console.log('body', body)
   const { email, password } = body;
   let user = await Users.findOne({ email, verify: true });
+  console.log('user', user)
   const isPasswordCorrect = await bcryptjs.compare(password, user.password);
+  console.log('isPasswordCorrect', isPasswordCorrect)
   if (isPasswordCorrect) {
     const token = jwt.sign({ sub: user._id }, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_EXPIRES_IN,
     });
-    user = await Users.findOneAndUpdate({ email }, { token }, { new: true });
+    const refreshToken = jwt.sign({ sub: user._id }, process.env.JWT_SECRET, {
+      expiresIn: process.env.JWT_EXPIRES_IN_REFRESH,
+    });
+    user = await Users.findOneAndUpdate({ email }, { token, refreshToken }, { new: true });
     return user;
   }
 };
 
 const logoutUser = async (token) => {
+  
   const user = await Users.findOneAndUpdate(
     { token },
-    { token: null },
+    { token: null, refreshToken:null },
     { new: true }
   );
   return user;
@@ -69,29 +76,16 @@ const logoutUser = async (token) => {
 const currentUser = async (token) => {
   const user = await Users.findOne(
     { token },
-    { email: 1, subscription: 1, avatarURL: 1, _id: 0 }
+    { email: 1, name: 1, _id: 0 }
   );
   return user;
 };
 
-const avatarsUpdate = async (token, body) => {
-  const { path, filename } = body;
-  const newFile = await Jimp.read(path);
-  const newPath = "./public/avatars/" + filename;
-  await newFile.resize(250, 250).writeAsync(newPath);
-  await fs.unlink(path);
-
-  const user = await Users.findOneAndUpdate(
-    { token },
-    { avatarURL: newPath },
-    { new: true }
-  );
-  return user;
-};
 
 const verificationUser = async (verificationToken) => {  
+  console.log('verificationToken', verificationToken)
   const user = await Users.findOneAndUpdate(
-    verificationToken,
+    {verificationToken},
     {
       verificationToken: null,
       verify: true,
@@ -99,6 +93,7 @@ const verificationUser = async (verificationToken) => {
 
     { new: true }
   );
+  console.log('user', user)
   return user;
 };
 
@@ -130,12 +125,31 @@ const verificationSecondUser = async (body) => {
   }
 };
 
+const refreshMToken = async token => {
+  userOld = await Users.findOne({ token }, { email: 1, _id: 1 });
+
+  const accessToken = jwt.sign({ sub: userOld._id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_IN,
+  });
+  const refreshToken = jwt.sign({ sub: userOld._id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_IN_REFRESH,
+  });
+
+  const user = await Users.findOneAndUpdate(
+    { token },
+    { token: accessToken, refreshToken },
+    { new: true }
+  );
+
+  return user;
+};
+
 module.exports = {
   signupUser,
   loginUser,
   logoutUser,
   currentUser,
-  avatarsUpdate,
   verificationUser,
   verificationSecondUser,
+  refreshMToken
 };

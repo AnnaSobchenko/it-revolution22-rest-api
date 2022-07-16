@@ -1,29 +1,29 @@
 const Joi = require("joi");
 
 module.exports = {
-  fullPostValidation: (req, res, next) => {
-    const schemaValid = Joi.object({
-      name: Joi.string().required(),
-      email: Joi.string()
-        .email({
-          minDomainSegments: 2,
-          tlds: { allow: ["com", "net", "ca", "ua"] },
-        })
-        .required(),
-      phone: Joi.string().required(),
-      favorite: Joi.boolean().optional(),
-      owner: Joi.string().optional(),
-    });
+  // fullPostValidation: (req, res, next) => {
+  //   const schemaValid = Joi.object({
+  //     name: Joi.string().required(),
+  //     email: Joi.string()
+  //       .email({
+  //         minDomainSegments: 2,
+  //         tlds: { allow: ["com", "net", "ca", "ua"] },
+  //       })
+  //       .required(),
+  //     phone: Joi.string().required(),
+  //     favorite: Joi.boolean().optional(),
+  //     owner: Joi.string().optional(),
+  //   });
 
-    const validationResult = schemaValid.validate(req.body);
-    if (validationResult.error) {
-      return res.status(400).json({
-        message: "missing required name field",
-        status: validationResult.error.details,
-      });
-    }
-    next();
-  },
+  //   const validationResult = schemaValid.validate(req.body);
+  //   if (validationResult.error) {
+  //     return res.status(400).json({
+  //       message: "missing required name field",
+  //       status: validationResult.error.details,
+  //     });
+  //   }
+  //   next();
+  // },
 
   patchValidation: (req, res, next) => {
     const schemaValid = Joi.object({
@@ -59,16 +59,36 @@ module.exports = {
     }
     next();
   },
-  postAuthValidation: (req, res, next) => {
+  postSignupValidation: (req, res, next) => {
     const schemaValid = Joi.object({
+      name: Joi.string().required(),
       email: Joi.string()
         .email({
           minDomainSegments: 2,
           tlds: { allow: ["com", "net"] },
         })
         .optional(),
-      password: Joi.string().required(),
-      subscription: Joi.string().optional(),
+      password: Joi.string().required(),     
+    });
+
+    const validationResult = schemaValid.validate(req.body);
+    if (validationResult.error) {
+      return res.status(400).json({
+        contentType: "application/json",
+        ResponseBody: validationResult.error.details,
+      });
+    }
+    next();
+  },
+  postLoginValidation: (req, res, next) => {
+    const schemaValid = Joi.object({     
+      email: Joi.string()
+        .email({
+          minDomainSegments: 2,
+          tlds: { allow: ["com", "net"] },
+        })
+        .optional(),
+      password: Joi.string().required(),     
     });
 
     const validationResult = schemaValid.validate(req.body);

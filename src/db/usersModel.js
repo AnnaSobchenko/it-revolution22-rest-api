@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
 
 const usersSchema = new mongoose.Schema({
-  nikName:{
+  name: {
     type: String,
-    required: [true, "nikName is required"]
+    required: [true, "nikName is required"],
   },
   password: {
     type: String,
@@ -13,8 +13,12 @@ const usersSchema = new mongoose.Schema({
     type: String,
     required: [true, "Email is required"],
     unique: true,
-  },  
+  },
   token: {
+    type: String,
+    default: null,
+  },
+  refreshToken: {
     type: String,
     default: null,
   },
@@ -24,7 +28,7 @@ const usersSchema = new mongoose.Schema({
   },
   verificationToken: {
     type: String,
-    required: [true, 'Verify token is required'],
+    required: [true, "Verify token is required"],
   },
 });
 

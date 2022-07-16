@@ -3,19 +3,19 @@ const {
   loginUser,
   currentUser,
   logoutUser,
-  avatarsUpdate,
   verificationUser,
   verificationSecondUser,
+  refreshMToken,
 } = require("../services/users");
 
 const signinUserController = async (req, res, next) => {
-  const { token, email, subscription } = await loginUser(req.body);
+  const { token, email, name } = await loginUser(req.body);
   res.status(201).json({
     contentType: "application/json",
     ResponseBody: {
       user: {
-        email: email,
-        subscription: subscription,
+        name,
+        email,
       },
       token: token,
     },
@@ -55,11 +55,17 @@ const getCurrentUserController=async (req, res, next) => {
     }
   }
 
+  const refreshTokenController=async (req, res, next) => {
+    const user = await refreshMToken(req.user.token);
+    res.status(200).send(user);
+  };
+  
 module.exports = {
   signupUserController,
   signinUserController,
   logoutUserController,
   getCurrentUserController,
   getVerifyTokenController,
-  getVerifyController
+  getVerifyController,
+  refreshTokenController
 };
