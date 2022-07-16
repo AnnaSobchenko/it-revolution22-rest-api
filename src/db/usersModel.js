@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
 
 const usersSchema = new mongoose.Schema({
+  nikName:{
+    type: String,
+    required: [true, "nikName is required"]
+  },
   password: {
     type: String,
     required: [true, "Password is required"],
@@ -9,19 +13,10 @@ const usersSchema = new mongoose.Schema({
     type: String,
     required: [true, "Email is required"],
     unique: true,
-  },
-  subscription: {
-    type: String,
-    enum: ["starter", "pro", "business"],
-    default: "starter",
-  },
+  },  
   token: {
     type: String,
     default: null,
-  },
-  avatarURL: {
-    type: String,
-    default: "",
   },
   verify: {
     type: Boolean,
