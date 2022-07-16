@@ -141,6 +141,69 @@ const refreshMToken = async (token) => {
   return user;
 };
 
+const getAllContacts = async (email) => {
+  const result = await Users.findOne({ email });
+  return result.contacts;
+};
+
+// const getOneContact = async (name) => {
+//   const result = await Users.findOne({ name: name });
+//   return result;
+// };
+
+const addNewContact = async ({ name, number, email }) => {
+  try {
+    const result = await Users.findOne({ email });
+    // console.log("result :>> ", result);
+    const contactId = uuid.v4();
+
+    // const addContact = await result.contacts.insertOne({
+    //   name,
+    //   number,
+    //   id: contactId,
+    // });
+    // const addContact = await result.contacts.push({
+    //   name,
+    //   number,
+    //   id: contactId,
+    // });
+
+    await result.contacts.save({ name, number, id: contactId });
+    return result.contacts;
+    // return newContactS;
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+const updateOneContact = async (email, body) => {
+  const { name, number, id } = body;
+  try {
+    const result = await Users.update(
+      { "contacts.id": id },
+      { name: name, number: number },
+      { upsert: false }
+    );
+    return result;
+    // const update = result.contacts.map((el) => {
+    //   if (el.id === id) {
+    //     el.name = name;
+    //   }
+    // });
+    // await Contacts.findByIdAndUpdate(contactId, {
+    //   $set: body,
+    // });
+    // return await Contacts.findById(contactId);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+const deleteContactById = async (contactId) => {
+  const newContacts = await Contacts.findByIdAndRemove(contactId);
+  return newContacts;
+};
+
 module.exports = {
   signupUser,
   loginUser,
@@ -149,4 +212,9 @@ module.exports = {
   verificationUser,
   verificationSecondUser,
   refreshMToken,
+  getAllContacts,
+  addNewContact,
+  updateOneContact,
+  deleteContactById,
+  // getOneContact,
 };
