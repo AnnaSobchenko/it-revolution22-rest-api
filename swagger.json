@@ -1,12 +1,12 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "Pro Test API docs",
-    "description": "API documentation for GoIT project 'PRO-TEST'. [Backend github repository](https://github.com/AnnaSobchenko/pro-test-rest-api)"
+    "title": "Test for IT-Revolution22 API docs",
+    "description": "API documentation for test task IT-Revolution22. [Backend github repository](https://github.com/AnnaSobchenko/it-revolution22-rest-api)"
   },
   "consumes": ["application/json"],
   "produces": ["application/json"],
-  "servers": [{ "url": "http://localhost:3000/" }],
+  "servers": [{ "url": "https://it-revolution22-rest-api.herokuapp.com/" }],
   "tags": [
     {
       "name": "User",
