@@ -6,6 +6,12 @@ const {
   verificationUser,
   verificationSecondUser,
   refreshMToken,
+  getAllContacts,
+  addNewContact,
+  updateOneContact,
+  deleteContactById,
+  getAllUsers,
+  deleteOneUser,
 } = require("../services/users");
 
 const signinUserController = async (req, res, next) => {
@@ -35,31 +41,71 @@ const signupUserController = async (req, res, next) => {
   });
 };
 
-const getCurrentUserController=async (req, res, next) => {
-    const user = await currentUser(req.user.token);
-    res.status(200).send(user);
+const getCurrentUserController = async (req, res, next) => {
+  const user = await currentUser(req.user.token);
+  res.status(200).send(user);
+};
+
+const getVerifyTokenController = async (req, res, next) => {
+  const user = await verificationUser(req.params.verificationToken);
+  res.status(200).json({ message: "Verification successful", user });
+};
+
+const getVerifyController = async (req, res, next) => {
+  const result = await verificationSecondUser(req.body);
+
+  if (result) {
+    res.status(200).json({ message: "Verification email send" });
+  } else {
+    res.status(400).json({ message: "Verification has already been passed" });
   }
+};
 
-  const getVerifyTokenController=async (req, res, next) => {
-    const user = await verificationUser(req.params.verificationToken);
-    res.status(200).json({ message: "Verification successful", user });
-  }
+const refreshTokenController = async (req, res, next) => {
+  const user = await refreshMToken(req.user.token);
+  res.status(200).send(user);
+};
 
-  const getVerifyController=async (req, res, next) => {
-    const result = await verificationSecondUser(req.body);
+const getContacts = async (req, res, next) => {
+  const { email } = req.body;
+  const contacts = await getAllContacts(email);
+  res.status(200).send(contacts);
+};
+const getUsers = async (req, res, next) => {
+  const users = await getAllUsers();
+  res.status(200).send(users);
+};
+const deleteUser = async (req, res, next) => {
+  await deleteOneUser(req.params.userId);
+  res.sendStatus(204);
+};
+const addContact = async (req, res, next) => {
+  const newContact = await addNewContact(req.body);
+  res.status(200).send(newContact);
+};
 
-    if (result) {
-      res.status(200).json({ message: "Verification email send" });
-    } else {
-      res.status(400).json({ message: "Verification has already been passed" });
-    }
-  }
+const updateContact = async (req, res, next) => {
+  const updatedContact = await updateOneContact(req.params.contactId, req.body);
 
-  const refreshTokenController=async (req, res, next) => {
-    const user = await refreshMToken(req.user.token);
-    res.status(200).send(user);
-  };
-  
+  !updatedContact
+    ? res.status(404).json({ message: "Couldn't update contact" })
+    : res.status(201).json({
+        contentType: "application/json",
+        ResponseBody: updatedContact,
+      });
+};
+
+const deleteContact = async (req, res, next) => {
+  console.log(req.params.contactId);
+  const contacts = await deleteContactById(
+    req.params.contactId,
+    req.body.email
+  );
+  !contacts
+    ? res.status(404).json({ message: "Contact not found" })
+    : res.status(200).json({ message: "Сontact deleted" });
+};
+
 module.exports = {
   signupUserController,
   signinUserController,
@@ -67,5 +113,11 @@ module.exports = {
   getCurrentUserController,
   getVerifyTokenController,
   getVerifyController,
-  refreshTokenController
+  refreshTokenController,
+  getContacts,
+  addContact,
+  updateContact,
+  deleteContact,
+  getUsers,
+  deleteUser,
 };

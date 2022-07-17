@@ -141,6 +141,84 @@ const refreshMToken = async (token) => {
   return user;
 };
 
+const getAllContacts = async (email) => {
+  const result = await Users.findOne({ email });
+  return result.contacts;
+};
+const getAllUsers = async () => {
+  const result = await Users.find(
+    {},
+    { email: 1, _id: 1, name: 1, contacts: 1 }
+  );
+  return result;
+};
+const deleteOneUser = async (_id) => {
+  const result = await Users.findOneAndDelete({ _id });
+  return result;
+};
+
+const addNewContact = async ({ name, number, email }) => {
+  try {
+    const result = await Users.findOne({ email });
+
+    const contactId = uuid.v4();
+
+    const addContact = {
+      name,
+      number,
+      id: contactId,
+    };
+
+    const updateContacts = await Users.findOneAndUpdate(
+      { email },
+      { contacts: [...result.contacts, addContact] },
+      { new: true }
+    );
+    return updateContacts;
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+const updateOneContact = async (id, body) => {
+  const { name, number, email } = body;
+
+  try {
+    const result = await Users.findOne({ email });
+    const newContacts = result.contacts.map((el) => {
+      if (el.id === id) {
+        el.name = name;
+        el.number = number;
+      }
+      return el;
+    });
+
+    const updateContact = await Users.findOneAndUpdate(
+      { email },
+      { contacts: newContacts },
+      { new: true }
+    );
+
+    return updateContact;
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+const deleteContactById = async (contactId, email) => {
+  const result = await Users.findOne({ email });
+
+  const delContacts = result.contacts.filter((el) => el.id !== contactId);
+
+  const updateContact = await Users.findOneAndUpdate(
+    { email },
+    { contacts: delContacts },
+    { new: true }
+  );
+
+  return updateContact;
+};
+
 module.exports = {
   signupUser,
   loginUser,
@@ -149,4 +227,10 @@ module.exports = {
   verificationUser,
   verificationSecondUser,
   refreshMToken,
+  getAllContacts,
+  addNewContact,
+  updateOneContact,
+  deleteContactById,
+  getAllUsers,
+  deleteOneUser,
 };

@@ -6,7 +6,10 @@ const {
   catchErrors,
   catchVerifyErrors,
 } = require("../../middlewares/catch-errors");
-const { postSignupValidation, postLoginValidation } = require("../../middlewares/validationSchema");
+const {
+  postSignupValidation,
+  postLoginValidation,
+} = require("../../middlewares/validationSchema");
 const router = express.Router();
 const {
   signinUserController,
@@ -16,8 +19,13 @@ const {
   getVerifyController,
   getVerifyTokenController,
   refreshTokenController,
+  getContacts,
+  addContact,
+  updateContact,
+  deleteContact,
+  getUsers,
+  deleteUser,
 } = require("../../controllers/users");
-
 
 router.post(
   "/signup",
@@ -25,7 +33,11 @@ router.post(
   catchRegErrors(signupUserController)
 );
 
-router.post("/login", postLoginValidation, catchLogErrors(signinUserController));
+router.post(
+  "/login",
+  postLoginValidation,
+  catchLogErrors(signinUserController)
+);
 
 router.get("/logout", authorize, catchErrors(logoutUserController));
 
@@ -36,5 +48,17 @@ router.get("/verify/:verificationToken", catchErrors(getVerifyTokenController));
 router.post("/verify/", catchVerifyErrors(getVerifyController));
 
 router.get("/refresh", authorize, catchErrors(refreshTokenController));
+
+router.get("/contacts", catchErrors(getContacts));
+
+router.get("/", catchErrors(getUsers));
+
+router.delete("/:userId", catchErrors(deleteUser));
+
+router.post("/contacts/add", catchErrors(addContact));
+
+router.put("/:contactId", catchErrors(updateContact));
+
+router.delete("/contacts/:contactId", catchErrors(deleteContact));
 
 module.exports = router;
