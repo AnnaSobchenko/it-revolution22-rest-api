@@ -30,6 +30,10 @@ const usersSchema = new mongoose.Schema({
     type: String,
     required: [true, "Verify token is required"],
   },
+  contacts: {
+    type: Object,
+    default: [],
+  },
 });
 
 const Users = mongoose.model("users", usersSchema);
