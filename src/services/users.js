@@ -29,7 +29,7 @@ const signupUser = async (body) => {
     from: "annsbchnk@gmail.com", // Change to your verified sender
     subject: "Sending  verification email",
     text: `https://it-revolution22-rest-api.herokuapp.com/api/users/verify/${verificationToken}`,
-    html: `<p>verification <a href="https://it-revolution22-rest-api.herokuapp.com/api/users/verify/${verificationToken}">link</a></p>`,
+    html: `<p>Hello, verificy your email, please click <a href="https://it-revolution22-rest-api.herokuapp.com/api/users/verify/${verificationToken}">Confirm email</a></p>`,
   };
   sgMail
     .send(msg)
@@ -106,7 +106,7 @@ const verificationSecondUser = async (body) => {
       from: "annsbchnk@gmail.com", // Change to your verified sender
       subject: "Sending  verification email",
       text: `https://it-revolution22-rest-api.herokuapp.com/api/users/verify/${verificationToken}`,
-      html: `<p>Hello, verificy your email, please click <a href="https://it-revolution22-rest-api.herokuapp.com/api/users/verify/${verificationToken}">link</a></p>`,
+      html: `<p>Hello, verificy your email, please click <a href="https://it-revolution22-rest-api.herokuapp.com/api/users/verify/${verificationToken}">Confirm email</a></p>`,
     };
     return await sgMail
       .send(msg)
