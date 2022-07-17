@@ -145,63 +145,78 @@ const getAllContacts = async (email) => {
   const result = await Users.findOne({ email });
   return result.contacts;
 };
-
-// const getOneContact = async (name) => {
-//   const result = await Users.findOne({ name: name });
-//   return result;
-// };
+const getAllUsers = async () => {
+  const result = await Users.find(
+    {},
+    { email: 1, _id: 1, name: 1, contacts: 1 }
+  );
+  return result;
+};
+const deleteOneUser = async (_id) => {
+  const result = await Users.findOneAndDelete({ _id });
+  return result;
+};
 
 const addNewContact = async ({ name, number, email }) => {
   try {
     const result = await Users.findOne({ email });
-    // console.log("result :>> ", result);
+
     const contactId = uuid.v4();
 
-    // const addContact = await result.contacts.insertOne({
-    //   name,
-    //   number,
-    //   id: contactId,
-    // });
-    // const addContact = await result.contacts.push({
-    //   name,
-    //   number,
-    //   id: contactId,
-    // });
+    const addContact = {
+      name,
+      number,
+      id: contactId,
+    };
 
-    await result.contacts.save({ name, number, id: contactId });
-    return result.contacts;
-    // return newContactS;
-  } catch (err) {
-    console.error(err);
-  }
-};
-
-const updateOneContact = async (email, body) => {
-  const { name, number, id } = body;
-  try {
-    const result = await Users.update(
-      { "contacts.id": id },
-      { name: name, number: number },
-      { upsert: false }
+    const updateContacts = await Users.findOneAndUpdate(
+      { email },
+      { contacts: [...result.contacts, addContact] },
+      { new: true }
     );
-    return result;
-    // const update = result.contacts.map((el) => {
-    //   if (el.id === id) {
-    //     el.name = name;
-    //   }
-    // });
-    // await Contacts.findByIdAndUpdate(contactId, {
-    //   $set: body,
-    // });
-    // return await Contacts.findById(contactId);
+    return updateContacts;
   } catch (err) {
     console.error(err);
   }
 };
 
-const deleteContactById = async (contactId) => {
-  const newContacts = await Contacts.findByIdAndRemove(contactId);
-  return newContacts;
+const updateOneContact = async (id, body) => {
+  const { name, number, email } = body;
+
+  try {
+    const result = await Users.findOne({ email });
+    const newContacts = result.contacts.map((el) => {
+      if (el.id === id) {
+        el.name = name;
+        el.number = number;
+      }
+      return el;
+    });
+
+    const updateContact = await Users.findOneAndUpdate(
+      { email },
+      { contacts: newContacts },
+      { new: true }
+    );
+
+    return updateContact;
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+const deleteContactById = async (contactId, email) => {
+  const result = await Users.findOne({ email });
+
+  const delContacts = result.contacts.filter((el) => el.id !== contactId);
+
+  const updateContact = await Users.findOneAndUpdate(
+    { email },
+    { contacts: delContacts },
+    { new: true }
+  );
+
+  return updateContact;
 };
 
 module.exports = {
@@ -216,5 +231,6 @@ module.exports = {
   addNewContact,
   updateOneContact,
   deleteContactById,
-  // getOneContact,
+  getAllUsers,
+  deleteOneUser,
 };

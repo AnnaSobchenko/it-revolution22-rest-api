@@ -23,6 +23,8 @@ const {
   addContact,
   updateContact,
   deleteContact,
+  getUsers,
+  deleteUser,
 } = require("../../controllers/users");
 
 router.post(
@@ -49,10 +51,14 @@ router.get("/refresh", authorize, catchErrors(refreshTokenController));
 
 router.get("/contacts", catchErrors(getContacts));
 
+router.get("/", catchErrors(getUsers));
+
+router.delete("/:userId", catchErrors(deleteUser));
+
 router.post("/contacts/add", catchErrors(addContact));
 
 router.put("/:contactId", catchErrors(updateContact));
 
-router.delete("/:contactId", catchErrors(deleteContact));
+router.delete("/contacts/:contactId", catchErrors(deleteContact));
 
 module.exports = router;

@@ -10,7 +10,8 @@ const {
   addNewContact,
   updateOneContact,
   deleteContactById,
-  getOneContact,
+  getAllUsers,
+  deleteOneUser,
 } = require("../services/users");
 
 const signinUserController = async (req, res, next) => {
@@ -70,23 +71,22 @@ const getContacts = async (req, res, next) => {
   const contacts = await getAllContacts(email);
   res.status(200).send(contacts);
 };
-
-// const getContact = async (req, res, next) => {
-//   const contact = await getOneContact(req.params.name);
-//   res.status(201).json({
-//     contentType: "application/json",
-//     ResponseBody: contact,
-//   });
-// };
-
+const getUsers = async (req, res, next) => {
+  const users = await getAllUsers();
+  res.status(200).send(users);
+};
+const deleteUser = async (req, res, next) => {
+  await deleteOneUser(req.params.userId);
+  res.sendStatus(204);
+};
 const addContact = async (req, res, next) => {
   const newContact = await addNewContact(req.body);
   res.status(200).send(newContact);
 };
 
 const updateContact = async (req, res, next) => {
-  const updatedContact = await updateOneContact(req.params.email, req.body);
-  console.log(req.params.contactId, req.body);
+  const updatedContact = await updateOneContact(req.params.contactId, req.body);
+
   !updatedContact
     ? res.status(404).json({ message: "Couldn't update contact" })
     : res.status(201).json({
@@ -97,7 +97,10 @@ const updateContact = async (req, res, next) => {
 
 const deleteContact = async (req, res, next) => {
   console.log(req.params.contactId);
-  const contacts = await deleteContactById(req.params.contactId);
+  const contacts = await deleteContactById(
+    req.params.contactId,
+    req.body.email
+  );
   !contacts
     ? res.status(404).json({ message: "Contact not found" })
     : res.status(200).json({ message: "Сontact deleted" });
@@ -112,8 +115,9 @@ module.exports = {
   getVerifyController,
   refreshTokenController,
   getContacts,
-  // getContact,
   addContact,
   updateContact,
   deleteContact,
+  getUsers,
+  deleteUser,
 };
