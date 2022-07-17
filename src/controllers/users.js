@@ -12,6 +12,7 @@ const {
   deleteContactById,
   getAllUsers,
   deleteOneUser,
+  getInfo
 } = require("../services/users");
 
 const signinUserController = async (req, res, next) => {
@@ -75,6 +76,10 @@ const getUsers = async (req, res, next) => {
   const users = await getAllUsers();
   res.status(200).send(users);
 };
+const getUserInfo = async (req, res, next) => {
+  const user = await getInfo(req.body);
+  res.status(200).send(user);
+};
 const deleteUser = async (req, res, next) => {
   await deleteOneUser(req.params.userId);
   res.sendStatus(204);
@@ -120,4 +125,5 @@ module.exports = {
   deleteContact,
   getUsers,
   deleteUser,
+  getUserInfo
 };
