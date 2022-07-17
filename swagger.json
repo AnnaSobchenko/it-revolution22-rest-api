@@ -296,32 +296,26 @@
       }
     
     },
-    "/api/users/{userId}": {
+    "/api/users/userId": {
       "delete": {
         "tags": ["User"],
         "summary": "Delete user by id",
-        "parameters": [
-          {"in": "path",
-            "name": "userId",
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "description": "user id"
+        "parameters": [ ],
+        "requestBody": {
+          "description": "Authentication's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteUserByIdRequest"
+              }
+            }
           }
-        ],        
+        },      
         "responses": {
           "204": {
             "description": "Successful operation"            
-          },
-          "400": {
-            "description": "No token provided",
-            "content": {}
-          },
-          "401": {
-            "description": "Unauthorized (invalid access token)",
-            "content": {}
-          },
+          },          
           "404": {
             "description": "Invalid user / Invalid session",
             "content": {}
@@ -630,6 +624,17 @@
             "description": "User's email",
             "format": "email",
             "example": "user1@mail.com"
+          }
+        }
+      },
+      "DeleteUserByIdRequest": {
+        "required": ["_id"],
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "User's id",
+            "example": "62d3d81095e900dbef3aa00c"
           }
         }
       },
