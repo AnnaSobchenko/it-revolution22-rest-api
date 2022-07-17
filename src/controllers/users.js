@@ -16,7 +16,7 @@ const {
 } = require("../services/users");
 
 const signinUserController = async (req, res, next) => {
-  const { token, email, name } = await loginUser(req.body);
+  const { token, email, name,refreshToken } = await loginUser(req.body);
   res.status(201).json({
     contentType: "application/json",
     ResponseBody: {
@@ -24,7 +24,8 @@ const signinUserController = async (req, res, next) => {
         name,
         email,
       },
-      token: token,
+      token,
+      refreshToken
     },
   });
 };
