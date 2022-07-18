@@ -1,30 +1,6 @@
 const Joi = require("joi");
 
 module.exports = {
-  // fullPostValidation: (req, res, next) => {
-  //   const schemaValid = Joi.object({
-  //     name: Joi.string().required(),
-  //     email: Joi.string()
-  //       .email({
-  //         minDomainSegments: 2,
-  //         tlds: { allow: ["com", "net", "ca", "ua"] },
-  //       })
-  //       .required(),
-  //     phone: Joi.string().required(),
-  //     favorite: Joi.boolean().optional(),
-  //     owner: Joi.string().optional(),
-  //   });
-
-  //   const validationResult = schemaValid.validate(req.body);
-  //   if (validationResult.error) {
-  //     return res.status(400).json({
-  //       message: "missing required name field",
-  //       status: validationResult.error.details,
-  //     });
-  //   }
-  //   next();
-  // },
-
   patchValidation: (req, res, next) => {
     const schemaValid = Joi.object({
       name: Joi.string().optional(),

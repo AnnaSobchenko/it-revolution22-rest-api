@@ -12,11 +12,11 @@ const {
   deleteContactById,
   getAllUsers,
   deleteOneUser,
-  getInfo
+  getInfo,
 } = require("../services/users");
 
 const signinUserController = async (req, res, next) => {
-  const { token, email, name,refreshToken } = await loginUser(req.body);
+  const { token, email, name, refreshToken } = await loginUser(req.body);
   res.status(201).json({
     contentType: "application/json",
     ResponseBody: {
@@ -25,7 +25,7 @@ const signinUserController = async (req, res, next) => {
         email,
       },
       token,
-      refreshToken
+      refreshToken,
     },
   });
 };
@@ -82,7 +82,6 @@ const getUserInfo = async (req, res, next) => {
   res.status(200).send(user);
 };
 const deleteUser = async (req, res, next) => {
-  console.log('req.params.userId', req.params.userId)
   await deleteOneUser(req.params.userId);
   res.sendStatus(204);
 };
@@ -123,5 +122,5 @@ module.exports = {
   deleteContact,
   getUsers,
   deleteUser,
-  getUserInfo
+  getUserInfo,
 };

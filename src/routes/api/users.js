@@ -25,7 +25,7 @@ const {
   deleteContact,
   getUsers,
   deleteUser,
-  getUserInfo
+  getUserInfo,
 } = require("../../controllers/users");
 
 router.post(

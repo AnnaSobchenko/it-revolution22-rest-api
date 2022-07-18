@@ -296,22 +296,20 @@
       }
     
     },
-    "/api/users/userId": {
+    "/api/users/{userId}": {
       "delete": {
         "tags": ["User"],
         "summary": "Delete user by id",
-        "parameters": [ ],
-        "requestBody": {
-          "description": "Authentication's object",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DeleteUserByIdRequest"
-              }
-            }
+        "parameters": [ 
+          {"in": "path",
+            "name": "userId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "user's id"
           }
-        },      
+        ],         
         "responses": {
           "204": {
             "description": "Successful operation"            
@@ -374,20 +372,11 @@
         }
       }
     },
-    "/api/users/contacts/{contactId}": {
-      "delete": {
+    "/api/users/contacts/contactId": {
+      "post": {
         "tags": ["User"],
         "summary": "Delete user's contact by id",
-        "parameters": [
-          {"in": "path",
-            "name": "contactId",
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "description": "user's contact id"
-          }
-        ],  
+        "parameters": [ ],  
         "requestBody": {
           "description": "Authentication's object",
           "required": true,

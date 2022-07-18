@@ -151,11 +151,8 @@ const getAllUsers = async () => {
   );
   return result;
 };
-const getInfo = async ({email}) => {
-  const result = await Users.find(
-    {email},
-    { email: 1, _id: 1, name: 1 }
-  );
+const getInfo = async ({ email }) => {
+  const result = await Users.find({ email }, { email: 1, _id: 1, name: 1 });
   return result;
 };
 const deleteOneUser = async (_id) => {
@@ -239,5 +236,5 @@ module.exports = {
   deleteContactById,
   getAllUsers,
   deleteOneUser,
-  getInfo
+  getInfo,
 };
