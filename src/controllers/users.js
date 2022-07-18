@@ -82,8 +82,8 @@ const getUserInfo = async (req, res, next) => {
   res.status(200).send(user);
 };
 const deleteUser = async (req, res, next) => {
-  console.log('req.body', req.body)
-  await deleteOneUser(req.body._id);
+  console.log('req.params.userId', req.params.userId)
+  await deleteOneUser(req.params.userId);
   res.sendStatus(204);
 };
 const addContact = async (req, res, next) => {

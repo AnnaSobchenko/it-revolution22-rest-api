@@ -56,7 +56,7 @@ router.get("/", catchErrors(getUsers));
 
 router.get("/info", catchErrors(getUserInfo));
 
-router.delete("/userId", catchErrors(deleteUser));
+router.delete("/:userId", catchErrors(deleteUser));
 
 router.post("/contacts/add", catchErrors(addContact));
 
