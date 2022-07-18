@@ -43,12 +43,11 @@ const signupUser = async (body) => {
 };
 
 const loginUser = async (body) => {
-  console.log("body", body);
   const { email, password } = body;
   let user = await Users.findOne({ email, verify: true });
-  console.log("user", user);
+
   const isPasswordCorrect = await bcryptjs.compare(password, user.password);
-  console.log("isPasswordCorrect", isPasswordCorrect);
+
   if (isPasswordCorrect) {
     const token = jwt.sign({ sub: user._id }, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_EXPIRES_IN,
@@ -212,7 +211,7 @@ const updateOneContact = async (id, body) => {
   }
 };
 
-const deleteContactById = async (contactId, email) => {
+const deleteContactById = async ({ email, contactId }) => {
   const result = await Users.findOne({ email });
 
   const delContacts = result.contacts.filter((el) => el.id !== contactId);
