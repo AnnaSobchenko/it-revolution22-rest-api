@@ -96,11 +96,7 @@ const updateContact = async (req, res, next) => {
 };
 
 const deleteContact = async (req, res, next) => {
-  console.log(req.params.contactId);
-  const contacts = await deleteContactById(
-    req.params.contactId,
-    req.body.email
-  );
+  const contacts = await deleteContactById(req.body);
   !contacts
     ? res.status(404).json({ message: "Contact not found" })
     : res.status(200).json({ message: "Сontact deleted" });
